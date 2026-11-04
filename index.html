@@ -3,971 +3,908 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0A090B">
-  <meta name="description" content="conexx1n — independent developer portfolio. Web interfaces, Python and open-source projects.">
-  <meta property="og:title" content="conexx1n — Developer">
-  <meta property="og:description" content="Web development, Python, and open-source software.">
+  <meta name="theme-color" content="#0c090b">
+  <meta name="description" content="conexx1n — python, javascript">
+  <title>conexx1n</title>
+
+  <!-- favicon: inline SVG, никаких внешних файлов -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c090b'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='monospace' font-size='30' font-weight='700' fill='%23ede1e6'%3Ecx%3C/text%3E%3Ccircle cx='50' cy='50' r='4' fill='%23d95771'/%3E%3C/svg%3E">
+
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <title>conexx1n — Developer</title>
+  <meta property="og:title" content="conexx1n">
+  <meta property="og:description" content="python, javascript. телеграм-боты, парсеры, мелкие скрипты.">
+  <meta property="og:url" content="https://conexx1n.github.io/">
+  <meta property="og:image" content="og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="conexx1n">
+  <meta property="og:locale" content="ru_RU">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="conexx1n">
+  <meta name="twitter:description" content="python, javascript. телеграм-боты, парсеры, мелкие скрипты.">
+  <meta name="twitter:image" content="og-image.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0A090B;
-      --bg-surface: #111014;
-      --border: rgba(240, 237, 241, 0.08);
-      --border-hover: rgba(192, 75, 101, 0.4);
-      --text: #F0EDF1;
-      --muted: #99929D;
-      --accent: #8F263F;
-      --accent-bright: #C04B65;
-      --max-width: 1040px;
-      --radius: 6px;
+      --bg: #0c090b;
+      --panel: #130e12;
+      --panel-2: #1a1318;
+      --text: #ede1e6;
+      --muted: #948189;
+      --faint: #4b3d45;
+      --accent: #d95771;
+      --accent-soft: rgba(217, 87, 113, 0.10);
+      --line: rgba(237, 225, 230, 0.07);
+      --line-accent: rgba(217, 87, 113, 0.32);
+      --radius: 12px;
+      --radius-lg: 18px;
+      --max: 1040px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 76px; color-scheme: dark; }
     body {
-      background-color: var(--bg);
+      background: var(--bg);
       color: var(--text);
-      font-family: 'Manrope', system-ui, -apple-system, sans-serif;
-      line-height: 1.6;
+      font-family: 'Manrope', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
-
-    a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
-    button { background: none; border: none; color: inherit; font: inherit; cursor: pointer; }
-
-    ::selection {
-      background: var(--accent);
-      color: var(--text);
-    }
-
-    :focus-visible {
-      outline: 2px solid var(--accent-bright);
-      outline-offset: 3px;
-    }
-
-    .container {
-      width: min(var(--max-width), calc(100% - 48px));
-      margin-inline: auto;
-    }
-
+    a { color: inherit; text-decoration: none; transition: color .15s; }
+    button { color: inherit; font: inherit; background: none; border: none; cursor: pointer; }
+    button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .term-input:focus,
+    .term-input:focus-visible { outline: none; box-shadow: none; }
     .mono { font-family: 'DM Mono', monospace; }
     .muted { color: var(--muted); }
-    .accent { color: var(--accent-bright); }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
 
-    /* Header */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10, 9, 11, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+    /* scroll progress */
+    .scroll-line {
+      position: fixed; top: 0; left: 0; right: 0; height: 1px;
+      z-index: 60;
+      pointer-events: none;
+    }
+    .scroll-line i {
+      display: block; height: 100%; width: 0;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      transition: width .1s linear;
     }
 
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 70px;
+    /* top */
+    .top {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(12, 9, 11, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
     }
+    .nav { height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { font-weight: 700; letter-spacing: -.04em; font-size: 15px; }
+    .nav-links { display: flex; gap: 22px; font-size: 13px; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .menu-btn { display: none; font-size: 18px; padding: 0 8px; }
 
-    .brand {
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      font-size: 1.05rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .brand-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--accent-bright);
-      border-radius: 50%;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-lang, .menu-toggle {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      padding: 6px 12px;
-      border-radius: var(--radius);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--muted);
-      transition: border-color 0.2s, color 0.2s;
-    }
-
-    .btn-lang:hover, .menu-toggle:hover {
-      border-color: var(--accent-bright);
-      color: var(--text);
-    }
-
-    .menu-toggle { display: none; }
-
-    /* Hero */
+    /* hero */
     .hero {
-      padding: 120px 0 80px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .hero-content {
-      max-width: 720px;
-    }
-
-    .hero-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--accent-bright);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 20px;
-      display: inline-block;
-    }
-
-    h1 {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-      margin-bottom: 24px;
-    }
-
-    .hero-desc {
-      font-size: clamp(1rem, 2vw, 1.15rem);
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: 36px;
-    }
-
-    .hero-desc strong {
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 20px;
-      border-radius: var(--radius);
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: background 0.2s, border-color 0.2s, transform 0.1s;
-    }
-
-    .btn:active { transform: translateY(1px); }
-
-    .btn-primary {
-      background: var(--accent);
-      color: var(--text);
-      border: 1px solid transparent;
-    }
-
-    .btn-primary:hover {
-      background: #A62D4A;
-    }
-
-    .btn-secondary {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--accent-bright);
-    }
-
-    /* Sections */
-    section {
-      padding: 90px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 48px;
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .section-index {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    /* About */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: start;
-    }
-
-    .about-text p {
-      color: var(--muted);
-      margin-bottom: 20px;
-      font-size: 1.02rem;
-      line-height: 1.75;
-    }
-
-    .about-text p:last-child { margin-bottom: 0; }
-    .about-text strong { color: var(--text); font-weight: 600; }
-
-    .about-meta {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-    }
-
-    .meta-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.9rem;
-    }
-
-    .meta-item:last-child { border-bottom: none; padding-bottom: 0; }
-    .meta-item:first-child { padding-top: 0; }
-
-    /* Tech Stack */
-    .stack-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    .stack-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      transition: border-color 0.2s;
-    }
-
-    .stack-card:hover {
-      border-color: var(--border-hover);
-    }
-
-    .stack-card h3 {
-      font-size: 1.05rem;
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-
-    .stack-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      background: rgba(240, 237, 241, 0.04);
-      border: 1px solid var(--border);
-      padding: 4px 8px;
-      border-radius: 4px;
-      color: var(--muted);
-    }
-
-    /* Projects */
-    .projects-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .project-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      display: grid;
-      grid-template-columns: 2fr 3fr 1fr;
-      gap: 20px;
-      align-items: center;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .project-card:hover {
-      border-color: var(--accent-bright);
-      background: #151318;
-    }
-
-    .project-main h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .project-main h3 a {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .project-main h3 a:hover {
-      color: var(--accent-bright);
-    }
-
-    .project-desc {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .project-meta {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--muted);
-      justify-self: end;
-    }
-
-    .project-lang {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .lang-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--accent-bright);
-      border-radius: 50%;
-    }
-
-    .projects-loading, .projects-error {
-      padding: 40px 0;
-      text-align: center;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
-    }
-
-    /* Terminal */
-    .terminal-container {
-      background: #070608;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      padding: 88px 0 96px;
+      position: relative;
       overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
-
-    .terminal-bar {
-      background: #111014;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-bottom: 1px solid var(--border);
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -120px; left: -120px;
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(217, 87, 113, 0.10), transparent 60%);
+      pointer-events: none;
+      filter: blur(10px);
     }
-
-    .term-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 56px;
+      align-items: end;
+      position: relative;
     }
-
-    .terminal-title {
-      margin-left: 8px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
+    .hero h1 {
+      font-size: clamp(48px, 8.5vw, 80px);
+      font-weight: 700;
+      letter-spacing: -.06em;
+      line-height: .95;
+      margin-bottom: 22px;
+    }
+    .hero-sub {
+      max-width: 460px;
       color: var(--muted);
+      font-size: 16px;
+      line-height: 1.65;
+      margin-bottom: 20px;
     }
-
-    .terminal-body {
-      padding: 24px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
-      min-height: 260px;
-      max-height: 400px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .hero-sub strong { color: var(--text); font-weight: 600; }
+    .hero-links {
+      display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+      font-size: 13px; color: var(--muted);
     }
+    .hero-links a { display: inline-flex; align-items: center; gap: 5px; }
+    .hero-links a:hover { color: var(--accent); }
+    .hero-links .sep { color: var(--faint); }
 
-    .term-output {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      color: var(--muted);
+    /* profile card */
+    .profile-card {
+      width: 260px;
+      background: linear-gradient(160deg, #1a1117, #110c10);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      box-shadow:
+        0 30px 60px -22px rgba(0, 0, 0, 0.75),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      position: relative;
+      transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+      transform-style: preserve-3d;
+      transition: transform .2s ease-out;
+      will-change: transform;
     }
-
-    .term-line-user {
-      color: var(--text);
+    .profile-photo-wrap {
+      position: relative;
+      aspect-ratio: 1.15;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #2a1a22;
+      border: 1px solid var(--line);
     }
-
-    .term-line-user span {
-      color: var(--accent-bright);
+    .profile-photo { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .profile-fallback {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      font-size: 60px; font-weight: 700; color: rgba(237, 225, 230, 0.14);
     }
-
-    .term-form {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: auto;
-      padding-top: 12px;
-      border-top: 1px dashed var(--border);
+    .profile-data {
+      margin-top: 12px;
+      padding: 10px 4px 2px;
+      border-top: 1px solid var(--line);
+      display: flex; flex-direction: column; gap: 2px;
     }
+    .profile-data strong { font-size: 15px; letter-spacing: -.02em; font-weight: 600; }
+    .profile-data small { font: 11px 'DM Mono', monospace; color: var(--muted); }
 
-    .term-prompt {
-      color: var(--accent-bright);
-    }
-
-    .term-input {
-      background: none;
-      border: none;
-      color: var(--text);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
-      flex: 1;
-      outline: none;
-    }
-
-    /* Contacts & Footer */
-    .contacts-content {
-      max-width: 600px;
-    }
-
-    .contacts-content p {
-      color: var(--muted);
-      margin-bottom: 24px;
-      font-size: 1.05rem;
-    }
-
-    footer {
-      padding: 40px 0;
-      border-top: 1px solid var(--border);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--bg-surface);
-      border: 1px solid var(--accent-bright);
-      color: var(--text);
-      padding: 10px 16px;
-      border-radius: var(--radius);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      transform: translateY(100px);
+    /* tilt glow */
+    .tilt { position: relative; }
+    .tilt::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(
+        320px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(217, 87, 113, 0.16),
+        transparent 60%
+      );
       opacity: 0;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
-      z-index: 1000;
+      transition: opacity .3s ease;
+    }
+    .tilt:hover::after { opacity: 1; }
+
+    /* sections */
+    section { padding: 68px 0; border-top: 1px solid var(--line); }
+    .section-title {
+      font-size: 13px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      font-family: 'DM Mono', monospace;
+      font-weight: 500;
+      margin-bottom: 26px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: "";
+      display: inline-block;
+      width: 14px; height: 1px;
+      background: var(--accent);
+      opacity: .6;
     }
 
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
+    /* about */
+    .about-text p {
+      color: #bfaeb6;
+      max-width: 600px;
+      margin-bottom: 12px;
+      line-height: 1.8;
+      font-size: 15.5px;
+    }
+    .about-text p strong { color: var(--text); font-weight: 600; }
+    .about-text p:last-child { margin-bottom: 0; }
+
+    /* stack / flip */
+    .stack-wrap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      max-width: 900px;
+    }
+    .flip-card {
+      perspective: 1200px;
+      height: 200px;
+      cursor: pointer;
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%; height: 100%;
+      transition: transform .8s cubic-bezier(.2,.8,.2,1);
+      transform-style: preserve-3d;
+    }
+    .flip-card:hover .flip-inner,
+    .flip-card:focus-within .flip-inner,
+    .flip-card.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-front, .flip-back {
+      position: absolute; inset: 0;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      padding: 20px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      background: linear-gradient(160deg, #171016, #100b0f);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+      transition: border-color .25s ease;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(160deg, #1f1419, #150e13);
+      border-color: var(--line-accent);
+    }
+    .flip-card:hover .flip-front { border-color: var(--line-accent); }
+    .flip-card h3 { font-size: 17px; font-weight: 600; letter-spacing: -.02em; }
+    .flip-card .hint {
+      font: 11px 'DM Mono', monospace; color: var(--faint);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .flip-card .hint::before { content: "↻"; color: var(--accent); }
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .tech-tags span {
+      font: 11px 'DM Mono', monospace;
+      border: 1px solid var(--line);
+      padding: 4px 10px;
+      border-radius: 50px;
+      color: var(--muted);
+    }
+    .flip-back .tech-tags span {
+      border-color: rgba(217, 87, 113, .25);
+      color: var(--text);
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
+    /* projects */
+    .project-list { border-top: 1px solid var(--line); }
+    .project-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 22px;
+      align-items: center;
+      padding: 18px 12px 18px 14px;
+      border-bottom: 1px solid var(--line);
+      border-left: 2px solid transparent;
+      transition: background .2s ease, border-color .2s ease;
+    }
+    .project-row:hover {
+      background: var(--accent-soft);
+      border-left-color: var(--accent);
+    }
+    .project-name {
+      font-weight: 600;
+      font-size: 15px;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .project-name:hover { color: var(--accent); }
+    .project-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px;
+      max-width: 560px;
+    }
+    .project-lang {
+      font: 11px 'DM Mono', monospace;
+      color: var(--muted);
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .project-lang .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    .project-stars { font: 12px 'DM Mono', monospace; color: var(--muted); min-width: 36px; text-align: right; }
+    .loading, .error-msg {
+      padding: 40px 20px; text-align: center;
+      color: var(--muted); font: 12px 'DM Mono', monospace;
+    }
+    .error-msg a { color: var(--accent); }
+
+    /* terminal */
+    .term {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #08060a;
+      overflow: hidden;
+      box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.65);
+      position: relative;
+    }
+    .term::before {
+      content: "";
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(217, 87, 113, 0.03), transparent 30%);
+    }
+    .term-bar {
+      height: 36px;
+      padding: 0 14px;
+      display: flex; align-items: center; gap: 6px;
+      background: #100b0e;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+    .term-bar .d { width: 8px; height: 8px; border-radius: 50%; background: #3a2830; }
+    .term-bar .title { margin-left: auto; font: 10px 'DM Mono', monospace; color: var(--faint); }
+    .term-body {
+      padding: 18px 20px;
+      font: 12.5px/1.75 'DM Mono', monospace;
+      color: #c1b1b9;
+      min-height: 260px;
+      max-height: 420px;
+      overflow-y: auto;
+      position: relative;
+    }
+    .term-line { margin-bottom: 2px; }
+    .term-line.prompt { color: var(--text); }
+    .term-line.prompt .ps { color: var(--accent); }
+    .term-line.out { color: #b0a1a8; white-space: pre-wrap; margin-bottom: 10px; }
+    .term-line.err { color: var(--accent); white-space: pre-wrap; margin-bottom: 10px; }
+    .term-form {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 4px;
+    }
+    .term-ps { color: var(--accent); white-space: nowrap; }
+    .term-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      -webkit-appearance: none;
+      appearance: none;
+      color: var(--text);
+      font: inherit;
+      padding: 0;
+    }
+    .term-input::placeholder { color: var(--faint); }
+    .term-suggest {
+      display: flex; flex-wrap: wrap; gap: 4px 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+      font: 11px 'DM Mono', monospace;
+      color: var(--faint);
+    }
+    .term-suggest .lbl { color: var(--faint); }
+    .term-suggest button {
+      color: var(--muted);
+      padding: 1px 4px;
+      border-radius: 4px;
+      transition: color .15s, background .15s;
+    }
+    .term-suggest button:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    /* contacts */
+    .contacts-p {
+      font-size: 15px; line-height: 1.9;
+      color: var(--muted);
+    }
+    .contacts-p a {
+      color: var(--accent);
+      border-bottom: 1px solid transparent;
+      transition: border-color .15s;
+    }
+    .contacts-p a:hover { border-bottom-color: var(--accent); }
+    .contacts-p .row {
+      display: flex; gap: 10px; align-items: baseline;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+    .contacts-p .row:last-child { border-bottom: none; }
+    .contacts-p .row .k {
+      font: 11px 'DM Mono', monospace;
+      color: var(--faint);
+      min-width: 80px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    /* footer */
+    footer {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+      font: 11px 'DM Mono', monospace;
+      color: var(--faint);
+    }
+    .foot-inner { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
+    .foot-inner a:hover { color: var(--accent); }
+    .foot-inner .dot { color: var(--faint); margin: 0 6px; }
+    .foot-inner .views { color: var(--faint); }
+    .foot-inner .views b { color: var(--muted); font-weight: 500; }
+
+    /* reveal */
+    [data-reveal] {
+      opacity: 0; transform: translateY(14px);
+      transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1);
+    }
+    [data-reveal].on { opacity: 1; transform: none; }
+
+    /* responsive */
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+      .profile-card { width: 100%; max-width: 300px; margin: 0; }
+      .stack-wrap { grid-template-columns: 1fr; }
+      .flip-card { height: 190px; }
+    }
+    @media (max-width: 680px) {
       .nav-links { display: none; }
-      .nav-links.active {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        right: 0;
-        background: var(--bg);
-        border-bottom: 1px solid var(--border);
-        padding: 24px;
-        gap: 16px;
+      .menu-btn { display: block; }
+      .nav-links.open {
+        display: flex; flex-direction: column;
+        position: absolute; top: 64px; left: 0; right: 0;
+        padding: 16px 20px; gap: 12px;
+        background: rgba(12, 9, 11, .98);
+        border-bottom: 1px solid var(--line);
       }
-      .menu-toggle { display: block; }
-      .about-grid { grid-template-columns: 1fr; gap: 32px; }
-      .project-card { grid-template-columns: 1fr; gap: 12px; }
-      .project-meta { justify-self: start; }
-      footer { flex-direction: column; gap: 12px; text-align: center; }
+      .hero { padding: 48px 0 56px; }
+      section { padding: 52px 0; }
+      .project-row { grid-template-columns: 1fr auto; padding: 16px 8px; }
+      .project-lang { display: none; }
+      .contacts-p .row { flex-direction: column; gap: 2px; }
+      .contacts-p .row .k { min-width: 0; }
     }
-
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+      [data-reveal] { opacity: 1; transform: none; }
+      .flip-card:hover .flip-inner,
+      .flip-card:focus-within .flip-inner { transform: none; }
+      .profile-card { transform: none !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
+  <div class="scroll-line" aria-hidden="true"><i id="scrollBar"></i></div>
+
+  <header class="top">
     <div class="container nav">
-      <a href="#" class="brand">conexx1n<span class="brand-dot"></span></a>
-      <nav class="nav-links" id="navLinks">
-        <a href="#about" data-i18n="navAbout">О себе</a>
-        <a href="#stack" data-i18n="navStack">Технологии</a>
-        <a href="#projects" data-i18n="navProjects">Проекты</a>
-        <a href="#terminal" data-i18n="navTerminal">Терминал</a>
-        <a href="#contacts" data-i18n="navContacts">Контакты</a>
+      <a class="brand" href="#top">conexx1n</a>
+      <nav class="nav-links" id="navLinks" aria-label="Навигация">
+        <a href="#about">о себе</a>
+        <a href="#stack">стек</a>
+        <a href="#projects">github</a>
+        <a href="#terminal">терминал</a>
+        <a href="#contacts">контакты</a>
       </nav>
-      <div class="nav-actions">
-        <button class="btn-lang" id="langToggle" aria-label="Toggle Language">EN</button>
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle Menu">Menu</button>
-      </div>
+      <button class="menu-btn" id="menuToggle" type="button" aria-label="меню" aria-expanded="false">☰</button>
     </div>
   </header>
 
-  <main>
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="container">
-        <div class="hero-content">
-          <span class="hero-tag" data-i18n="heroTag">Независимый разработчик</span>
-          <h1 id="heroTitle">conexx1n</h1>
-          <p class="hero-desc" id="heroDesc" data-i18n="heroDesc">
-            Создаю веб-интерфейсы, разрабатываю утилиты и автоматизацию на <strong>Python</strong>, а также занимаюсь развитием собственных программных проектов.
+  <main id="top">
+
+    <!-- hero -->
+    <section class="hero" style="border-top:none;">
+      <div class="container hero-grid">
+        <div>
+          <h1>conexx1n</h1>
+          <p class="hero-sub">
+            Пишу на <strong>python</strong> и <strong>javascript</strong>.
+            Телеграм-боты, парсеры, разные мелкие скрипты.
+            Этот сайт — обычный html/css, без сборки.
           </p>
-          <div class="hero-actions">
-            <a href="https://github.com/conexx1n" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-              GitHub ↗
-            </a>
-            <button class="btn btn-secondary" id="copyProfileBtn" data-i18n="copyBtn">
-              Скопировать ник
-            </button>
+          <div class="hero-links">
+            <a href="https://github.com/conexx1n" target="_blank" rel="noopener">github ↗</a>
+            <span class="sep">·</span>
+            <a href="https://dalink.to/connex1n" target="_blank" rel="noopener">dalink ↗</a>
+            <span class="sep">·</span>
+            <a href="#terminal">терминал ↓</a>
           </div>
         </div>
+
+        <article class="profile-card tilt" id="profileCard">
+          <div class="profile-photo-wrap">
+            <div class="profile-fallback" aria-hidden="true">cx</div>
+            <img class="profile-photo" src="https://avatars.githubusercontent.com/u/312367793?v=4" alt="conexx1n" loading="lazy" onerror="this.style.display='none'">
+          </div>
+          <div class="profile-data">
+            <strong>conexx1n</strong>
+            <small>python / javascript</small>
+          </div>
+        </article>
       </div>
     </section>
 
-    <!-- About Section -->
+    <!-- about -->
     <section id="about">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title" data-i18n="aboutTitle">О себе</h2>
-          <span class="section-index">01 / 05</span>
-        </div>
-        <div class="about-grid">
-          <div class="about-text">
-            <p data-i18n="aboutText1">
-              Приветствую. Меня зовут <strong>conexx1n</strong>. Я увлечен разработкой ПО, проектированием чистых веб-интерфейсов и созданием рабочих скриптов.
-            </p>
-            <p data-i18n="aboutText2">
-              В работе уделяю внимание деталям, простоте кода и производительности. Предпочитаю практический подход: каждая строчка должна решать конкретную задачу без лишней сложности.
-            </p>
-          </div>
-          <div class="about-meta">
-            <div class="meta-item">
-              <span class="muted" data-i18n="metaStatus">Статус</span>
-              <span class="mono accent" data-i18n="metaStatusVal">Активен / Open Source</span>
-            </div>
-            <div class="meta-item">
-              <span class="muted" data-i18n="metaFocus">Основной стек</span>
-              <span class="mono">Python, JS, HTML / CSS</span>
-            </div>
-            <div class="meta-item">
-              <span class="muted" data-i18n="metaPlatform">Платформа</span>
-              <span class="mono">GitHub Pages</span>
-            </div>
-          </div>
+        <h2 class="section-title">о себе</h2>
+        <div class="about-text" data-reveal>
+          <p>
+            В основном работаю с python и javascript. Пишу телеграм-ботов,
+            парсеры и разные мелкие утилиты под свои задачи.
+          </p>
+          <p>
+            Публичные проекты лежат на гитхабе. Сайт сделан на чистом
+            html/css/js — без сборки и фреймворков.
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- Tech Stack -->
+    <!-- stack -->
     <section id="stack">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title" data-i18n="stackTitle">Технологии</h2>
-          <span class="section-index">02 / 05</span>
-        </div>
-        <div class="stack-grid">
-          <div class="stack-card">
-            <h3 data-i18n="stackFrontend">Frontend</h3>
-            <div class="stack-tags">
-              <span class="tag">HTML5</span>
-              <span class="tag">CSS3 / Flexbox / Grid</span>
-              <span class="tag">JavaScript (ES6+)</span>
-              <span class="tag">DOM API</span>
+        <h2 class="section-title">стек</h2>
+        <div class="stack-wrap">
+          <div class="flip-card" tabindex="0" data-reveal>
+            <div class="flip-inner">
+              <div class="flip-front">
+                <h3>frontend</h3>
+                <div class="hint">наведи</div>
+              </div>
+              <div class="flip-back">
+                <h3>frontend</h3>
+                <div class="tech-tags">
+                  <span>html5</span>
+                  <span>css3</span>
+                  <span>grid / flex</span>
+                  <span>vanilla js</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="stack-card">
-            <h3 data-i18n="stackBackend">Backend & Automation</h3>
-            <div class="stack-tags">
-              <span class="tag">Python</span>
-              <span class="tag">API Integration</span>
-              <span class="tag">SQLite</span>
-              <span class="tag">Automation Scripts</span>
+
+          <div class="flip-card" tabindex="0" data-reveal>
+            <div class="flip-inner">
+              <div class="flip-front">
+                <h3>python</h3>
+                <div class="hint">наведи</div>
+              </div>
+              <div class="flip-back">
+                <h3>python</h3>
+                <div class="tech-tags">
+                  <span>aiogram</span>
+                  <span>requests</span>
+                  <span>sqlite</span>
+                  <span>парсеры</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="stack-card">
-            <h3 data-i18n="stackTools">Инструменты</h3>
-            <div class="stack-tags">
-              <span class="tag">Git & GitHub</span>
-              <span class="tag">Linux CLI</span>
-              <span class="tag">VS Code</span>
-              <span class="tag">GitHub Pages</span>
+
+          <div class="flip-card" tabindex="0" data-reveal>
+            <div class="flip-inner">
+              <div class="flip-front">
+                <h3>окружение</h3>
+                <div class="hint">наведи</div>
+              </div>
+              <div class="flip-back">
+                <h3>окружение</h3>
+                <div class="tech-tags">
+                  <span>linux</span>
+                  <span>git</span>
+                  <span>vscode</span>
+                  <span>gh pages</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Projects Section -->
+    <!-- projects -->
     <section id="projects">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title" data-i18n="projectsTitle">Репозитории GitHub</h2>
-          <span class="section-index">03 / 05</span>
-        </div>
-        <div id="projectsContainer">
-          <div class="projects-loading mono" data-i18n="projectsLoading">Загрузка репозиториев...</div>
+        <h2 class="section-title">github</h2>
+        <div id="projectsContainer" data-reveal>
+          <div class="loading">загружаю репозитории...</div>
         </div>
       </div>
     </section>
 
-    <!-- Terminal Section -->
+    <!-- terminal -->
     <section id="terminal">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title" data-i18n="terminalTitle">Интерактивная консоль</h2>
-          <span class="section-index">04 / 05</span>
-        </div>
-        <div class="terminal-container">
-          <div class="terminal-bar">
-            <span class="term-dot"></span>
-            <span class="term-dot"></span>
-            <span class="term-dot"></span>
-            <span class="terminal-title">conexx1n@terminal:~</span>
+        <h2 class="section-title">терминал</h2>
+        <div class="term" data-reveal aria-label="интерактивный терминал">
+          <div class="term-bar">
+            <span class="d"></span><span class="d"></span><span class="d"></span>
+            <span class="title">conexx1n@terminal:~</span>
           </div>
-          <div class="terminal-body" id="termBody">
-            <div class="term-output" id="termOutput">
-              <div>conexx1n shell v1.0.0. Type <span class="accent">help</span> to view available commands.</div>
-              <div class="muted">────────────────────────────────────────</div>
-            </div>
-            <form class="term-form" id="termForm">
-              <span class="term-prompt">conexx1n@terminal:~$</span>
-              <input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false" placeholder="введите команду...">
+          <div class="term-body" id="termBody">
+            <div class="term-line out" id="termIntro">conexx1n shell · help для списка команд</div>
+            <div id="termOut"></div>
+            <form class="term-form" id="termForm" autocomplete="off">
+              <span class="term-ps">$</span>
+              <input class="term-input" id="termInput" aria-label="команда" placeholder="команда..." spellcheck="false">
             </form>
+            <div class="term-suggest" aria-label="подсказки команд">
+              <span class="lbl">подсказки:</span>
+              <button type="button" data-cmd="help">help</button>
+              <button type="button" data-cmd="about">about</button>
+              <button type="button" data-cmd="stack">stack</button>
+              <button type="button" data-cmd="github">github</button>
+              <button type="button" data-cmd="link">link</button>
+              <button type="button" data-cmd="clear">clear</button>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Contacts Section -->
+    <!-- contacts -->
     <section id="contacts">
       <div class="container">
-        <div class="section-header">
-          <h2 class="section-title" data-i18n="contactsTitle">Контакты</h2>
-          <span class="section-index">05 / 05</span>
-        </div>
-        <div class="contacts-content">
-          <p data-i18n="contactsDesc">
-            Связаться со мной или ознакомиться с исходным кодом проектов можно через мой профиль на GitHub.
-          </p>
-          <div class="hero-actions">
-            <a href="https://github.com/conexx1n" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-              GitHub Profile ↗
-            </a>
+        <h2 class="section-title">контакты</h2>
+        <div class="contacts-p" data-reveal>
+          <div class="row">
+            <span class="k">github</span>
+            <a href="https://github.com/conexx1n" target="_blank" rel="noopener">github.com/conexx1n ↗</a>
+          </div>
+          <div class="row">
+            <span class="k">links</span>
+            <a href="https://dalink.to/connex1n" target="_blank" rel="noopener">dalink.to/connex1n ↗</a>
           </div>
         </div>
       </div>
     </section>
+
   </main>
 
-  <!-- Footer -->
   <footer>
-    <div class="container">
-      <div>© <span id="currentYear"></span> connexx1n. All rights reserved.</div>
-      <div class="mono muted">Dark Developer Portfolio</div>
+    <div class="container foot-inner">
+      <span>© <span id="year"></span> conexx1n</span>
+      <span class="dot">·</span>
+      <span>обновлено <span id="lastUpdated">—</span></span>
+      <span class="dot">·</span>
+      <span class="views" id="viewsWrap" hidden>просмотров: <b id="views">—</b></span>
+      <span class="dot" id="viewsDot" hidden>·</span>
+      <a href="https://github.com/conexx1n" target="_blank" rel="noopener">github</a>
+      <span class="dot">·</span>
+      <a href="https://dalink.to/connex1n" target="_blank" rel="noopener">dalink</a>
+      <span class="dot">·</span>
+      <a href="#top">наверх</a>
     </div>
   </footer>
 
-  <div class="toast" id="toast">Ник скопирован в буфер обмена</div>
+  <!-- counter.dev: впиши свой user из counter.dev вместо "YOUR_USER" -->
+  <script data-goatcounter="https://YOUR_USER.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
   <script>
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    (() => {
+      'use strict';
 
-    // Localization Data
-    const i18n = {
-      ru: {
-        navAbout: "О себе",
-        navStack: "Технологии",
-        navProjects: "Проекты",
-        navTerminal: "Терминал",
-        navContacts: "Контакты",
-        heroTag: "Независимый разработчик",
-        heroDesc: "Создаю веб-интерфейсы, разрабатываю утилиты и автоматизацию на <strong>Python</strong>, а также занимаюсь развитием собственных программных проектов.",
-        copyBtn: "Скопировать ник",
-        aboutTitle: "О себе",
-        aboutText1: "Приветствую. Меня зовут <strong>conexx1n</strong>. Я увлечен разработкой ПО, проектированием чистых веб-интерфейсов и созданием рабочих скриптов.",
-        aboutText2: "В работе уделяю внимание деталям, простоте кода и производительности. Предпочитаю практический подход: каждая строчка должна решать конкретную задачу без лишней сложности.",
-        metaStatus: "Статус",
-        metaStatusVal: "Активен / Open Source",
-        metaFocus: "Основной стек",
-        metaPlatform: "Платформа",
-        stackTitle: "Технологии",
-        stackFrontend: "Frontend",
-        stackBackend: "Backend & Automation",
-        stackTools: "Инструменты",
-        projectsTitle: "Репозитории GitHub",
-        projectsLoading: "Загрузка репозиториев...",
-        projectsError: "Не удалось загрузить данные из GitHub API.",
-        projectsFallback: "Посмотреть проекты напрямую на GitHub",
-        terminalTitle: "Интерактивная консоль",
-        contactsTitle: "Контакты",
-        contactsDesc: "Связаться со мной или ознакомиться с исходным кодом проектов можно через мой профиль на GitHub.",
-        toastCopied: "Ник скопирован в буфер обмена",
-        termHelp: "Доступные команды:\n  help    - список команд\n  about   - информация о разработчике\n  stack   - используемые технологии\n  github  - ссылка на GitHub профиль\n  clear   - очистить экран терминала",
-        termAbout: "conexx1n — независимый разработчик, создающий веб-интерфейсы и Python-скрипты.",
-        termStack: "Стек: Python, JavaScript, HTML5, CSS3, Git, Linux.",
-        termGithub: "Открытие профиля GitHub: https://github.com/conexx1n",
-        termUnknown: "Неизвестная команда. Введите 'help' для справки."
-      },
-      en: {
-        navAbout: "About",
-        navStack: "Stack",
-        navProjects: "Projects",
-        navTerminal: "Terminal",
-        navContacts: "Contacts",
-        heroTag: "Independent Developer",
-        heroDesc: "Building web interfaces, utilities, and automation tools using <strong>Python</strong>, while developing personal software projects.",
-        copyBtn: "Copy Nickname",
-        aboutTitle: "About Me",
-        aboutText1: "Hello. My name is <strong>conexx1n</strong>. I am passionate about software development, designing clean web interfaces, and building useful scripts.",
-        aboutText2: "I focus on details, code simplicity, and performance. I prefer a practical approach where every line of code solves a concrete problem without unnecessary complexity.",
-        metaStatus: "Status",
-        metaStatusVal: "Active / Open Source",
-        metaFocus: "Core Stack",
-        metaPlatform: "Platform",
-        stackTitle: "Tech Stack",
-        stackFrontend: "Frontend",
-        stackBackend: "Backend & Automation",
-        stackTools: "Tools",
-        projectsTitle: "GitHub Repositories",
-        projectsLoading: "Loading repositories...",
-        projectsError: "Failed to fetch repositories from GitHub API.",
-        projectsFallback: "View repositories directly on GitHub",
-        terminalTitle: "Interactive Console",
-        contactsTitle: "Contacts",
-        contactsDesc: "You can reach out or check the source code of my projects via my GitHub profile.",
-        toastCopied: "Nickname copied to clipboard",
-        termHelp: "Available commands:\n  help    - list all commands\n  about   - developer info\n  stack   - technical stack\n  github  - open GitHub profile link\n  clear   - clear terminal screen",
-        termAbout: "conexx1n is an independent developer building web interfaces and Python scripts.",
-        termStack: "Stack: Python, JavaScript, HTML5, CSS3, Git, Linux.",
-        termGithub: "Opening GitHub profile: https://github.com/conexx1n",
-        termUnknown: "Unknown command. Type 'help' for available commands."
-      }
-    };
+      const $ = (s, r = document) => r.querySelector(s);
+      const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+      const esc = (s) => String(s).replace(/[&<>"']/g, c => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+      ));
 
-    let currentLang = 'ru';
+      /* scroll progress */
+      const bar = $('#scrollBar');
+      const onScroll = () => {
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        const p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+        bar.style.width = p.toFixed(2) + '%';
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
 
-    function setLanguage(lang) {
-      currentLang = lang;
-      document.documentElement.lang = lang;
-      document.getElementById('langToggle').textContent = lang === 'ru' ? 'EN' : 'RU';
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (i18n[lang][key]) {
-          el.innerHTML = i18n[lang][key];
-        }
+      /* mobile menu */
+      const menu = $('#navLinks');
+      const menuBtn = $('#menuToggle');
+      menuBtn.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        menuBtn.setAttribute('aria-expanded', String(open));
+        menuBtn.textContent = open ? '×' : '☰';
       });
-    }
+      $$('.nav-links a').forEach(a => a.addEventListener('click', () => {
+        menu.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        menuBtn.textContent = '☰';
+      }));
 
-    document.getElementById('langToggle').addEventListener('click', () => {
-      setLanguage(currentLang === 'ru' ? 'en' : 'ru');
-    });
+      /* flip cards */
+      $$('.flip-card').forEach(card => {
+        card.addEventListener('click', () => card.classList.toggle('flipped'));
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.classList.toggle('flipped');
+          }
+        });
+      });
 
-    // Mobile Menu Toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
-    menuToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-    });
-
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => navLinks.classList.remove('active'));
-    });
-
-    // Toast Notification & Copy
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
-    }
-
-    document.getElementById('copyProfileBtn').addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText('conexx1n');
-        showToast(i18n[currentLang].toastCopied);
-      } catch (err) {
-        showToast('Error copying to clipboard');
+      /* tilt + glow */
+      const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!isTouch && !reduced) {
+        const TILT = 7;
+        $$('.tilt').forEach(el => {
+          let raf = null;
+          el.addEventListener('pointermove', (e) => {
+            if (e.pointerType === 'touch') return;
+            if (raf) cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(() => {
+              const r = el.getBoundingClientRect();
+              const x = (e.clientX - r.left) / r.width;
+              const y = (e.clientY - r.top) / r.height;
+              el.style.setProperty('--tilt-x', ((y - .5) * -TILT).toFixed(2) + 'deg');
+              el.style.setProperty('--tilt-y', ((x - .5) *  TILT).toFixed(2) + 'deg');
+              el.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+              el.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+            });
+          });
+          el.addEventListener('pointerleave', () => {
+            if (raf) cancelAnimationFrame(raf);
+            el.style.setProperty('--tilt-x', '0deg');
+            el.style.setProperty('--tilt-y', '0deg');
+            el.style.setProperty('--mx', '50%');
+            el.style.setProperty('--my', '50%');
+          });
+        });
       }
-    });
 
-    // Fetch GitHub Repositories
-    async function loadGitHubRepos() {
-      const container = document.getElementById('projectsContainer');
-      try {
-        const response = await fetch('https://api.github.com/users/conexx1n/repos?sort=updated&per_page=8&type=owner');
-        if (!response.ok) throw new Error('API error');
-        const repos = await response.json();
+      /* reveal */
+      if ('IntersectionObserver' in window && !reduced) {
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              e.target.classList.add('on');
+              io.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        $$('[data-reveal]').forEach(el => io.observe(el));
+      } else {
+        $$('[data-reveal]').forEach(el => el.classList.add('on'));
+      }
 
-        // Filter out forks if any
-        const ownRepos = repos.filter(repo => !repo.fork);
+      /* github repos */
+      async function loadRepos() {
+        const c = $('#projectsContainer');
+        try {
+          const r = await fetch('https://api.github.com/users/conexx1n/repos?sort=updated&per_page=10&type=owner');
+          if (!r.ok) throw new Error('api');
+          const repos = (await r.json()).filter(x => !x.fork);
+          if (!repos.length) {
+            c.innerHTML = '<div class="loading">публичных репозиториев нет</div>';
+            return;
+          }
+          const rows = repos.map(repo => `
+            <div class="project-row">
+              <div>
+                <a class="project-name" href="${repo.html_url}" target="_blank" rel="noopener">
+                  ${esc(repo.name)} ↗
+                </a>
+                <div class="project-desc">${esc(repo.description || 'без описания')}</div>
+              </div>
+              <span class="project-lang"><span class="dot"></span>${esc(repo.language || '—')}</span>
+              <span class="project-stars">★ ${repo.stargazers_count}</span>
+            </div>
+          `).join('');
+          c.innerHTML = `<div class="project-list">${rows}</div>`;
+        } catch {
+          c.innerHTML = `<div class="error-msg">не удалось загрузить репозитории. <a href="https://github.com/conexx1n" target="_blank" rel="noopener">открыть github ↗</a></div>`;
+        }
+      }
+      loadRepos();
 
-        if (ownRepos.length === 0) {
-          container.innerHTML = `<div class="projects-loading mono">No public repositories found.</div>`;
+      /* terminal */
+      const termOut = $('#termOut');
+      const termBody = $('#termBody');
+      const termForm = $('#termForm');
+      const termInput = $('#termInput');
+
+      function printLine(text, cls = 'out') {
+        const d = document.createElement('div');
+        d.className = 'term-line ' + cls;
+        d.textContent = text;
+        termOut.appendChild(d);
+        termBody.scrollTop = termBody.scrollHeight;
+      }
+
+      function runCommand(raw) {
+        const cmd = raw.trim();
+        if (!cmd) return;
+        const low = cmd.toLowerCase();
+
+        const p = document.createElement('div');
+        p.className = 'term-line prompt';
+        p.innerHTML = `<span class="ps">$</span> ${esc(cmd)}`;
+        termOut.appendChild(p);
+
+        if (low === 'clear') {
+          termOut.innerHTML = '';
+          termBody.scrollTop = 0;
           return;
         }
 
-        const listEl = document.createElement('div');
-        listEl.className = 'projects-list';
+        if (low === 'help') {
+          printLine(
+            'команды:\n' +
+            '  help    — этот список\n' +
+            '  about   — обо мне\n' +
+            '  stack   — на чём пишу\n' +
+            '  github  — открыть профиль\n' +
+            '  link    — открыть dalink\n' +
+            '  clear   — очистить экран'
+          );
+        } else if (low === 'about') {
+          printLine('conexx1n — python, javascript. боты, парсеры, скрипты.');
+        } else if (low === 'stack') {
+          printLine('python · javascript · html/css · git · linux');
+        } else if (low === 'github') {
+          printLine('открываю github.com/conexx1n');
+          window.open('https://github.com/conexx1n', '_blank', 'noopener');
+        } else if (low === 'link' || low === 'links') {
+          printLine('открываю dalink.to/connex1n');
+          window.open('https://dalink.to/connex1n', '_blank', 'noopener');
+        } else {
+          printLine(`неизвестная команда: ${cmd}. попробуй help`, 'err');
+        }
+      }
 
-        ownRepos.forEach(repo => {
-          const card = document.createElement('div');
-          card.className = 'project-card';
-          
-          const description = repo.description ? repo.description : (currentLang === 'ru' ? 'Описание отсутствует' : 'No description provided');
-          const language = repo.language ? repo.language : 'Code';
-          const stars = repo.stargazers_count;
+      termForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        runCommand(termInput.value);
+        termInput.value = '';
+      });
 
-          card.innerHTML = `
-            <div class="project-main">
-              <h3>
-                <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">
-                  ${repo.name} ↗
-                </a>
-              </h3>
-              <p class="project-desc">${escapeHtml(description)}</p>
-            </div>
-            <div class="project-meta">
-              <span class="project-lang"><span class="lang-dot"></span>${escapeHtml(language)}</span>
-              <span>★ ${stars}</span>
-            </div>
-          `;
-          listEl.appendChild(card);
+      /* term suggestions: клик вставляет команду в input */
+      $$('.term-suggest [data-cmd]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          termInput.value = btn.dataset.cmd;
+          termInput.focus();
         });
+      });
 
-        container.innerHTML = '';
-        container.appendChild(listEl);
-      } catch (err) {
-        container.innerHTML = `
-          <div class="projects-error">
-            <p>${i18n[currentLang].projectsError}</p>
-            <br>
-            <a href="https://github.com/conexx1n" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="display:inline-flex;">
-              ${i18n[currentLang].projectsFallback} ↗
-            </a>
-          </div>
-        `;
-      }
-    }
-
-    function escapeHtml(text) {
-      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-      return text.replace(/[&<>"']/g, m => map[m]);
-    }
-
-    loadGitHubRepos();
-
-    // Terminal Logic (No eval)
-    const termOutput = document.getElementById('termOutput');
-    const termInput = document.getElementById('termInput');
-    const termForm = document.getElementById('termForm');
-
-    termForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const cmd = termInput.value.trim().toLowerCase();
-      if (!cmd) return;
-
-      // Append user command line
-      const userLine = document.createElement('div');
-      userLine.className = 'term-line-user';
-      userLine.innerHTML = `<span>conexx1n@terminal:~$</span> ${escapeHtml(termInput.value)}`;
-      termOutput.appendChild(userLine);
-
-      const resDiv = document.createElement('div');
-      resDiv.style.whiteSpace = 'pre-wrap';
-      resDiv.style.marginTop = '4px';
-
-      switch (cmd) {
-        case 'help':
-          resDiv.textContent = i18n[currentLang].termHelp;
-          break;
-        case 'about':
-          resDiv.textContent = i18n[currentLang].termAbout;
-          break;
-        case 'stack':
-          resDiv.textContent = i18n[currentLang].termStack;
-          break;
-        case 'github':
-          resDiv.textContent = i18n[currentLang].termGithub;
-          window.open('https://github.com/conexx1n', '_blank');
-          break;
-        case 'clear':
-          termOutput.innerHTML = '';
-          termInput.value = '';
-          return;
-        default:
-          resDiv.textContent = i18n[currentLang].termUnknown;
-          resDiv.style.color = '#C04B65';
-          break;
+      /* year + last updated */
+      $('#year').textContent = new Date().getFullYear();
+      const lm = new Date(document.lastModified);
+      if (!isNaN(lm)) {
+        const pad = n => String(n).padStart(2, '0');
+        $('#lastUpdated').textContent = `${lm.getFullYear()}-${pad(lm.getMonth() + 1)}-${pad(lm.getDate())}`;
       }
 
-      termOutput.appendChild(resDiv);
-      termInput.value = '';
-      termOutput.parentElement.scrollTop = termOutput.parentElement.scrollHeight;
-    });
+      /* views: counter.dev — работает только если вписан user */
+      const GC = 'YOUR_USER'; // ← впиши сюда свой counter.dev user
+      if (GC !== 'YOUR_USER') {
+        fetch(`https://${GC}.goatcounter.com/api/v0/stats/total?start=1970-01-01&end=2999-12-31`)
+          .then(r => r.ok ? r.json() : null)
+          .then(j => {
+            const n = j && (j.total ?? j.count);
+            if (n != null) {
+              $('#views').textContent = Number(n).toLocaleString('ru-RU');
+              $('#viewsWrap').hidden = false;
+              $('#viewsDot').hidden = false;
+            }
+          })
+          .catch(() => {});
+      }
+    })();
   </script>
 </body>
 </html>
