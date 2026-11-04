@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="180" cy="120" r="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d95771" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#d95771" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Подключаем шрифты прямо в SVG -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700&amp;display=swap');
+      .name { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 180px; fill: #ede1e6; letter-spacing: -8px; }
+      .sub { font-family: 'DM Mono', monospace; font-weight: 400; font-size: 28px; fill: #948189; letter-spacing: 4px; }
+    </style>
+  </defs>
+  
+  <!-- Тёмный фон как на сайте -->
+  <rect width="1200" height="630" fill="#0c090b"/>
+  <!-- Лёгкое свечение слева -->
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  
+  <!-- Текст (выровнен по левому краю, как на сайте) -->
+  <text x="90" y="330" class="name">conexx1n</text>
+  <text x="96" y="392" class="sub">python / javascript</text>
+  
+  <!-- Точка в правом нижнем углу -->
+  <circle cx="1120" cy="560" r="10" fill="#d95771"/>
+</svg>
